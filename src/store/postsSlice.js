@@ -18,7 +18,6 @@ const postsSlice = createSlice({
       state.loading = false;
       state.posts = payload;
       state.error = null;
-      console.log(payload);
     },
     getPostsFailure: (state, { payload }) => {
       state.loading = false;

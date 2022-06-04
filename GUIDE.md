@@ -1,5 +1,5 @@
 # Redux Toolkit (RTK) integration with React
-[Put something about React, Redux & Redux Toolkit (RTK)]
+
 
 ## Installation
 1. React Installation
@@ -20,45 +20,48 @@ npm i redux react-redux @reduxjs/toolkit
 2. Create a reducer file `postsSlice.js` inside `store` directory inside `postsSlice.js` file we write our reducer
 
 ```javascript
-import { createSlice } from '@reduxjs/toolkit'
-
+import axios from "axios";
+import { createSlice } from "@reduxjs/toolkit";
 
 const INITIAL_STATE = {
-    posts: [],
-    error: null,
-    loading: false,
-}
+  posts: [],
+  error: null,
+  loading: false,
+};
 
 const postsSlice = createSlice({
-    name: 'posts',
-    initialState: INITIAL_STATE,
-    reducers: {
-        getPosts: (state) => {
-            state.loading = true;
-        },
-        getPostsSuccess: (state, {payload}) => {
-            state.loading = false;
-            state.posts = payload;
-            state.error = null;
-        },
-        getPostsFailure: (state, {payload}) => {
-            state.loading = false;
-            state.error = payload;
-        }
-    }
+  name: "posts",
+  initialState: INITIAL_STATE,
+  reducers: {
+    getPosts: (state) => {
+      state.loading = true;
+    },
+    getPostsSuccess: (state, { payload }) => {
+      state.loading = false;
+      state.posts = payload;
+      state.error = null;
+    },
+    getPostsFailure: (state, { payload }) => {
+      state.loading = false;
+      state.error = payload;
+    },
+  },
 });
 
-const { getPosts, getPostsSuccess, getPostsFailure} = postsSlice.actions;
+const { getPosts, getPostsSuccess, getPostsFailure } = postsSlice.actions;
 
-export function fetchPosts(){
-    return dispatch => {
-        dispatch(getPosts());
-        fetch('https://example.com/posts').then((res) => {
-            dispatch(getPostsSuccess(res.data));
-        }).catch((error) => {
-            dispatch(getPostsFailure(error));
-        });
-    }
+export function fetchPosts() {
+  return (dispatch) => {
+    dispatch(getPosts());
+    axios
+      .get("https://jsonplaceholder.typicode.com/posts")
+      .then((res) => {
+        dispatch(getPostsSuccess(res.data));
+      })
+      .catch((error) => {
+        dispatch(getPostsFailure(error));
+      });
+  };
 }
 
 export const postsSelector = (state) => state.posts;
